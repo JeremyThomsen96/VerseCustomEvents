@@ -26,7 +26,7 @@ SubscribableEvents := module:
         #invoke all callback methods
         Signal<override>(Payload:payload):void={for(Callback:Callbacks){Callback(Payload)}}
 
-    #way cleaner to use if build "per type" | you can implement this for just about any type you want, you can also remove the awaitable interface if you do not need it to make it smaller
+    #way cleaner to use if written "per type" | you can implement this for just about any type you want, you can also remove the awaitable interface if you do not need it to make it smaller
     agent_event <public>:= class(signalable(agent), awaitable(agent), cancelable):
 
         #array of methods to call on Signal()
