@@ -1,0 +1,38 @@
+using { /Verse.org/Simulation }
+using { /Fortnite.com/Devices }
+using { /Fortnite.com/Characters }
+using { /Verse.org/Random }
+using { SubscribableEvents }
+
+TestDevice := class(creative_device):
+
+    var Cancelables : []cancelable = array{}
+
+    AgentExampleEvent : agent_event = agent_event{}
+    var ParametricExampleEvent : generic_event(player) = generic_event(player){}
+
+    OnBegin<override>()<suspends>:void=
+
+        set Cancelables += array:
+            AgentExampleEvent.Subscribe(AgentSignaled)
+        set ParametricExampleEvent = ParametricExampleEvent.Subscribe(PlayerSignaled)
+
+        TestSignal()
+
+        Sleep(1.0)
+
+        for(Cancelable:Cancelables){Cancelable.Cancel()}
+        set ParametricExampleEvent = ParametricExampleEvent.Cancel()
+
+        TestSignal()
+
+    TestSignal():void=
+        for(Player:GetPlayspace().GetPlayers(), Agent := agent[Player]):
+            ParametricExampleEvent.Signal(Player)
+            AgentExampleEvent.Signal(Agent)
+
+    AgentSignaled(Agent:agent):void=
+        Print("Agent Signaled!")
+
+    PlayerSignaled(Player:player):void=
+        Print("Player Signaled!")
